@@ -7,10 +7,8 @@ class App extends Component {
     super(props);
     this.state = {
       board: [],
-      test: 'test'
     }
   }
-  
   
   componentDidMount() {
     const board = [];
@@ -30,24 +28,14 @@ class App extends Component {
       }
       return row;
     });
-    console.log('init:', init)
+    console.log('initial board:', init)
     this.setState({board: init});
-    
-    // this.life(init, 20, [2,3], [3])
     this.control();
   }
   
-  // componentDidUpdate() {
-  //   const w = this.state.board;
-  //   console.log('w:', w)
-  //   // this.life = this.life.bind(this);
-  // }
-  
   control() {
-    console.log('BOARD out', this.state.board, this.state.test);
     
     setTimeout(() => {
-      console.log('BOARD', this.state.board, this.state.test);
       this.life(this.state.board, 1, [2,3], [3]);
       this.control();
     }, 50
@@ -80,93 +68,79 @@ class App extends Component {
           
           if (!currentCell) {
             
-            if (comeToLife.includes(alive)) {//console.log(x, y, 'alive', alive);
-            nextLife = 1;
+            if (comeToLife.includes(alive)) {
+              nextLife = 1;
+            }
+          } else {
+            if (continueLiving.includes(alive)) nextLife = 1;
           }
-        } else {//console.log(x, y, 'alive', alive);
-        // printImagePic(world)
-        if (continueLiving.includes(alive)) nextLife = 1;
+          
+          nextWorld[y][x] = (!nextLife) ? 0 : 1;
+          
+        }
+        
       }
+
+      this.setState({board: nextWorld});
+      console.log('w:', nextWorld)
       
-      nextWorld[y][x] = (!nextLife) ? 0 : 1;
-      
-    } // x 
-    
-  } // y
-  // printImagePic(nextWorld)
-  this.setState({board: nextWorld});
-  console.log('w:', nextWorld)
-  
-  world = nextWorld;
-  reps--;
-} //reps
-
-// setTimeout(() => {
-//       console.log('BOARD', this.state.board);
-//       this.life(this.state.board, 1, [2,3], [3]), 1000
-//     });
-
-return world;
-
-// helper functions
-
-function calcCells(x,y) {
-  
-  let alive = 0;
-  
-  for (let j = y - 1; j <= y + 1; j ++){
-    
-    if (j < 0 || j > height - 1) continue;
-    
-    for (let i = x - 1; i <= x+1; i++) {
-      
-      if (i === x && j === y) continue;
-      
-      if (i < 0 || i > width - 1) continue;
-      
-      if (world[j][i]) {
-        alive++;
-        //console.log('!',i,j," and xy ",x,y);
-      }
-    } // i
-    
-  } // j
-  
-  return alive;
-} // calcCells
-
-
-} //life
-
-
-
-
-
-render() {
-  
-  const world = this.state.board;
-  const board = [];
-  
-  for (let i = 0; i < world.length; i++) {
-    
-    const row = world[i];
-    const rowPrint = [];
-    for (let j = 0; j < row.length; j++){
-      const bgc = row[j] ? 'cornflowerblue' : 'lightgrey';
-      rowPrint.push(
-        <div key={j} className="cell" style={{backgroundColor: bgc}}></div>
-        )
-      }
-      board.push(<div key={i}>{rowPrint}</div>);
+      world = nextWorld;
+      reps--;
     }
     
-    
-    return (
-      <div>
-      {board}
-      </div>
-      );
-    }
+    return world;
+        
+    function calcCells(x,y) {
+      
+      let alive = 0;
+      
+      for (let j = y - 1; j <= y + 1; j ++){
+        
+        if (j < 0 || j > height - 1) continue;
+        
+        for (let i = x - 1; i <= x+1; i++) {
+          
+          if (i === x && j === y) continue;
+          
+          if (i < 0 || i > width - 1) continue;
+          
+          if (world[j][i]) {
+            alive++;
+          }
+        }
+        
+      }
+      
+      return alive;
+    } 
   }
   
-  export default App;
+  
+  render() {
+    
+    const world = this.state.board;
+    const board = [];
+    
+    for (let i = 0; i < world.length; i++) {
+      
+      const row = world[i];
+      const rowPrint = [];
+      for (let j = 0; j < row.length; j++){
+        const bgc = row[j] ? 'cornflowerblue' : 'lightgrey';
+        rowPrint.push(
+          <div key={j} className="cell" style={{backgroundColor: bgc}}></div>
+          )
+        }
+        board.push(<div key={i}>{rowPrint}</div>);
+      }
+      
+      
+      return (
+        <div>
+        {board}
+        </div>
+        );
+      }
+    }
+    
+    export default App;
